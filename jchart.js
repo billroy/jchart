@@ -22,7 +22,7 @@ var io;                         // socket.io handle
 
 // configure json body parser
 var bodyParser = require('body-parser');
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '10mb'}));
 
 // serve the static content
 if (!argv.no_static) app.use('/', express.static(__dirname + '/public'));
@@ -87,7 +87,7 @@ var listener = server.listen(argv.port, function() {
             console.log('Client disconnected: socket count=', sockets.length);
         });
 
-        socket.emit('ping', {time: new Date().getTime()});
+        //socket.emit('ping', {time: new Date().getTime()});
     });
 
 });

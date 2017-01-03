@@ -50,13 +50,13 @@ function updateChart(chartData) {
     // TODO: validate chartData?
 
     chart.destroy();
-    initChart();
-
+    initChart(chartData);
+/*
     chartData.forEach(function(point) {
         series.addPoint(point);
-        addText(chart, point.x, point.y, point.name, point.color);
+        //addText(chart, point.x, point.y, point.name, point.color);
     });
-
+*/
     // update indicator
     $('#chartcount').text('charts served: ' + (++chart_count));
 }
@@ -66,9 +66,9 @@ function updateChart(chartData) {
 // highcharts setup
 //
 var chart;      // global chart handle
-var axis_max = 1000;
+//var axis_max = 1000;
 
-function initChart() {
+function initChart(chartData) {
     // phase chart setup
     Highcharts.setOptions({global: {useUTC: false}});
 
@@ -102,8 +102,8 @@ function initChart() {
             text: 'Intermediate Optimization Results'
         },
         xAxis: {
-            min: -axis_max,
-            max: axis_max,
+            //min: -axis_max,
+            //max: axis_max,
             //title: {text: 'RR(t) ms'},
             //tickInterval: 200,
             //minorTickInterval: 100,
@@ -111,8 +111,8 @@ function initChart() {
             gridLineDashStyle: 'dash'
         },
         yAxis: {
-            min: -axis_max,
-            max: axis_max,
+            //min: -axis_max,
+            //max: axis_max,
             //title: {text: 'RR(t-1) ms'},
             //tickInterval: 200,
             //minorTickInterval: 100,
@@ -121,7 +121,8 @@ function initChart() {
         },
         tooltip: {
             formatter: function () {
-                return [this.x, this.y].join(', ');
+                //console.log('point:', this);
+                return this.point.name + ': ' + [this.x, this.y].join(', ');
             }
         },
         legend: { enabled: false },
@@ -129,10 +130,13 @@ function initChart() {
         series: [{
             name: 'Intermediate Optimization Results',
             allowPointSelect: true,
-            data: (function () {
-                console.log('data called');
-                return [];
-            }())
+            data: chartData,
+            dataLabels: {
+                enabled: true,
+                x: 20,  // x offset for data label
+                formatter: function() { return this.point.name; },
+                style: {color: 'black'}
+            }
         }]
     });
 }
