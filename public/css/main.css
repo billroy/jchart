@@ -1,0 +1,48 @@
+
+body {
+    font-family: Sans-Serif;
+    background-color: darkgray;
+}
+
+.header {
+    height: 60px;
+    padding-top: 6px;
+    background-color: black;
+    color: white;
+    /* font-weight: bold; */
+    font-size: 24pt;
+}
+
+.header a {
+    color: white;
+}
+
+#header-right, #header-right a {
+    padding-top: 9px;
+    font-size: 16pt;
+    color: lightgreen;
+}
+
+#commands {
+    padding-top: 8px;
+    height: 48px;
+    background-color: lightgray;
+}
+
+.indicator {
+    margin-left: 16px;
+    padding-top: 14px;
+    font-size: 20px;
+}
+
+.path-control {
+    width: 350px;
+}
+
+.footer {
+    font-size: 10px;
+}
+
+.chart {
+    height: 100%;
+}
