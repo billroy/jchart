@@ -28,6 +28,7 @@
 
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/offline-exporting.js"></script>
 
     <link href='/css/main.css' rel='stylesheet' type='text/css'>
 
@@ -126,7 +127,10 @@ function initChart(chartData) {
             }
         },
         legend: { enabled: false },
-        exporting: { enabled: true },
+        exporting: {
+            enabled: true,
+            fallbackToExportServer: false   // do NOT change this or charts can be leaked!
+        },
         series: [{
             name: 'Intermediate Optimization Results',
             allowPointSelect: true,
