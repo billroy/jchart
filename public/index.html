@@ -40,28 +40,49 @@
 
 <script type='text/javascript'>
 
+var charts = [];
+var selected_chart;
 var chart_count = 0;
 
 function updateChart(chartData) {
-
     console.log('Updating chart...', chartData);
+    if (!chartData) return;
+    charts.push(chartData);
 
-    if (!chart || !chartData) return;
-
-    // TODO: validate chartData?
-
-    chart.destroy();
-    initChart(chartData);
-/*
-    chartData.forEach(function(point) {
-        series.addPoint(point);
-        //addText(chart, point.x, point.y, point.name, point.color);
-    });
-*/
-    // update indicator
-    $('#chartcount').text('charts served: ' + (++chart_count));
+    // show the new chart if we were looking at the last one
+    if ((charts.length == 1) || (selected_chart == (charts.length-2))) {
+        selected_chart = charts.length - 1;
+        showChart(selected_chart);
+    }
+    else updateIndicators();
 }
 
+function prevChart() {
+    if (charts.length && selected_chart) showChart(--selected_chart);
+}
+
+function nextChart() {
+    if (charts.length && (selected_chart < (charts.length-1))) showChart(++selected_chart);
+}
+
+function updateIndicators() {
+    $('#chartcount').text('charts served: ' + (chart_count));
+    $('#selectedchart').text([
+        'selected:', ((selected_chart || 0)+1).toString(),
+        'of', charts.length.toString()
+    ].join(' '));
+}
+
+function showChart(chartIndex) {
+    if (chart) {
+        chart.destroy();
+        chart = null;
+    }
+    initChart(charts[chartIndex]);
+    selected_chart = chartIndex;
+    ++chart_count;
+    updateIndicators();
+}
 
 //
 // highcharts setup
@@ -194,6 +215,9 @@ $(document).ready(function() {
         Pushit.send('stop', new Date().toString());
     });
 
+    $('#cmd_prev').on('click', prevChart);
+    $('#cmd_next').on('click', nextChart);
+
     Pushit.on('chart', function(chart) {
         console.log('Received chart update:', chart);
         updateChart(chart);
@@ -246,9 +270,19 @@ function showInfo(msg) { toastr.info(msg); }
             <span id='heart-icon' class="glyphicon glyphicon-heart" aria-hidden="true"></span>
             <span id='beatcount' class='indicator'>n: 0</span>
             -->
-            <span id='chartcount' class='indicator'>charts served: 0</span>
+            <span id='chartcount' class='indicator'></span>
+            <span id='selectedchart' class='indicator'></span>
 
             <div class="btn-group" style='float:right'>
+
+                <button id='cmd_prev' type="button" class="btn btn-primary btn-sm" aria-label="clear">
+                    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                    <span>prev</span>
+                </button>
+                <button id='cmd_next' type="button" class="btn btn-primary btn-sm" aria-label="clear">
+                    <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                    <span>next</span>
+                </button>
                 <button id='cmd_clear' type="button" class="btn btn-danger btn-sm" aria-label="clear">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     <span>clear</span>
