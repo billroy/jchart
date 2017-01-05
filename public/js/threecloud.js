@@ -10,25 +10,16 @@ function init(chartData) {
     //container = document.createElement( 'div' );
     //document.body.appendChild( container );
     container = document.getElementById('chart');
-    camera = new THREE.PerspectiveCamera( 80, window.innerWidth / window.innerHeight, 2, 5000 );
+    camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 2, 5000 );
     camera.position.z = 2000;
     scene = new THREE.Scene();
     //scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
     geometry = new THREE.Geometry();
     sprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/disc.png" );
-    //for ( i = 0; i < 10000; i ++ ) {
-    //    var vertex = new THREE.Vector3();
-    //    vertex.x = 2000 * Math.random() - 1000;
-    //    vertex.y = 2000 * Math.random() - 1000;
-    //    vertex.z = 2000 * Math.random() - 1000;
-    //    geometry.vertices.push( vertex );
-    //}
 
+    // points and labels
     if (chartData) chartData.forEach(function(point) {
-        var vertex = new THREE.Vector3();
-        vertex.x = point.x;
-        vertex.y = point.y;
-        vertex.z = point.z;
+        var vertex = new THREE.Vector3(point.x, point.y, point.z);
         geometry.vertices.push(vertex);
 
         var spritey = makeTextSprite(point.name, {
@@ -46,10 +37,24 @@ function init(chartData) {
         sizeAttenuation: true,
         alphaTest: 0.5,
         transparent: true,
+        color: 'green'
     } );
-    material.color.setHSL( 1.0, 0.3, 0.7 );
+    //material.color.setHSL( 1.0, 0.3, 0.7 );
     particles = new THREE.Points( geometry, material );
     scene.add( particles );
+
+    // lines
+    function randomPoint() {
+        var point = chartData[Math.floor(Math.random() * chartData.length)];
+        return new THREE.Vector3(point.x, point.y, point.z);
+    }
+    var line_material = new THREE.LineBasicMaterial({color: 0x202020, opacity: 0.01});
+    if (0 && chartData) for (var i=0; i < 2*chartData.length; i++) {
+        var line_geometry = new THREE.Geometry();
+        line_geometry.vertices.push(randomPoint(), randomPoint());
+        var line_layer = new THREE.Line(line_geometry, line_material);
+        scene.add(line_layer);
+    }
 
     //
     renderer = new THREE.WebGLRenderer();

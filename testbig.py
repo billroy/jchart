@@ -21,7 +21,7 @@ def rn():
 
 data = []
 i = 0
-n = 1000
+n = 500
 
 while (i < n):
     i= i + 1
