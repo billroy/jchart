@@ -24,7 +24,7 @@ n = 1000
 
 while (i < n):
     i= i + 1
-    new_item = {'name': rn(), 'x': r(), 'y': r(), 'color': rc()}
+    new_item = {'name': rn(), 'x': r(), 'y': r(), 'z': r(), 'color': rc()}
     print 'New item:', new_item
     data.append(new_item)
 
