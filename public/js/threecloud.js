@@ -11,6 +11,7 @@ function init(chartData) {
     //document.body.appendChild( container );
     container = document.getElementById('chart');
     camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 2, 5000 );
+    camera.position.y = 200;
     camera.position.z = 2000;
     scene = new THREE.Scene();
     //scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
@@ -25,7 +26,7 @@ function init(chartData) {
         var spritey = makeTextSprite(point.name, {
             fontsize: 24,
             borderColor: point.color,           // {r:255, g:0, b:0, a:1.0},
-            backgroundColor: {r:100, g:100, b:100, a:0.8}
+            backgroundColor: {r:32, g:32, b:32, a:0.8}
         });
         spritey.position.set(point.x, point.y, point.z);
         scene.add( spritey );
@@ -55,6 +56,20 @@ function init(chartData) {
         var line_layer = new THREE.Line(line_geometry, line_material);
         scene.add(line_layer);
     }
+
+    // axes
+    function drawAxis(x, y, z, color) {
+        var axis_material = new THREE.LineBasicMaterial({color: color, opacity: .5});
+        var axis_geometry = new THREE.Geometry();
+        var start = new THREE.Vector3(0, 0, 0);
+        var end = new THREE.Vector3(x, y, z);
+        axis_geometry.vertices.push(start, end);
+        var axis_layer = new THREE.Line(axis_geometry, axis_material);
+        scene.add(axis_layer);
+    }
+    drawAxis(1000, 0, 0, 'red');
+    drawAxis(0, 1000, 0, 'green');
+    drawAxis(0, 0, 1000, 'blue');
 
     //
     renderer = new THREE.WebGLRenderer();
