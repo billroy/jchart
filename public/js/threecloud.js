@@ -34,7 +34,7 @@ function init(chartData) {
 
     material = new THREE.PointsMaterial( {
         map: sprite,
-        size: 35,
+        size: 16,
         sizeAttenuation: true,
         alphaTest: 0.5,
         transparent: true,
@@ -44,18 +44,24 @@ function init(chartData) {
     particles = new THREE.Points( geometry, material );
     scene.add( particles );
 
-    // lines
-    function randomPoint() {
-        var point = chartData.points[Math.floor(Math.random() * chartData.points.length)];
+    // connection lines
+    //function randomPoint() {
+    //    var point = chartData.points[Math.floor(Math.random() * chartData.points.length)];
+    //    return new THREE.Vector3(point.x, point.y, point.z);
+    //}
+    function getVertex(point_index) {
+        var point = chartData.points[point_index];
         return new THREE.Vector3(point.x, point.y, point.z);
     }
+
     var line_material = new THREE.LineBasicMaterial({color: 0x202020, opacity: 0.01});
-    if (0 && chartData) for (var i=0; i < chartData.length; i++) {
+
+    if (chartData && chartData.connections) chartData.connections.forEach(function(connection) {
         var line_geometry = new THREE.Geometry();
-        line_geometry.vertices.push(randomPoint(), randomPoint());
+        line_geometry.vertices.push(getVertex(connection[0]), getVertex(connection[1]));
         var line_layer = new THREE.Line(line_geometry, line_material);
         scene.add(line_layer);
-    }
+    });
 
     // axes
     function drawAxis(x, y, z, color) {
