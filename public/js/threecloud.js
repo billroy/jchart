@@ -19,8 +19,8 @@ function init(chartData) {
     sprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/disc.png" );
 
     // points and labels
-    if (chartData) chartData.forEach(function(point) {
-        var vertex = new THREE.Vector3(point.x, point.y, point.z);
+    if (chartData && chartData.points) chartData.points.forEach(function(point) {
+        var vertex = new THREE.Vector3(point.x, point.y, point.z || 0);
         geometry.vertices.push(vertex);
 
         var spritey = makeTextSprite(point.name, {
@@ -28,7 +28,7 @@ function init(chartData) {
             borderColor: point.color,           // {r:255, g:0, b:0, a:1.0},
             backgroundColor: {r:32, g:32, b:32, a:0.8}
         });
-        spritey.position.set(point.x, point.y, point.z);
+        spritey.position.set(point.x, point.y, point.z || 0);
         scene.add( spritey );
     });
 
@@ -46,11 +46,11 @@ function init(chartData) {
 
     // lines
     function randomPoint() {
-        var point = chartData[Math.floor(Math.random() * chartData.length)];
+        var point = chartData.points[Math.floor(Math.random() * chartData.points.length)];
         return new THREE.Vector3(point.x, point.y, point.z);
     }
     var line_material = new THREE.LineBasicMaterial({color: 0x202020, opacity: 0.01});
-    if (0 && chartData) for (var i=0; i < 2*chartData.length; i++) {
+    if (0 && chartData) for (var i=0; i < chartData.length; i++) {
         var line_geometry = new THREE.Geometry();
         line_geometry.vertices.push(randomPoint(), randomPoint());
         var line_layer = new THREE.Line(line_geometry, line_material);
@@ -97,6 +97,7 @@ function init(chartData) {
 	controls.staticMoving = true;
 	controls.dynamicDampingFactor = 0.3;
 	controls.keys = [ 65, 83, 68 ];
+    //controls.minDistance = -Infinity;
     controls.addEventListener( 'change', render );
 }
 

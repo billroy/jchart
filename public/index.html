@@ -121,7 +121,7 @@ function initChart(chartData) {
             }
         },
         title: {
-            text: 'Intermediate Optimization Results'
+            text: chartData ? chartData.title : 'Chart Title'
         },
         xAxis: {
             //min: -axis_max,
@@ -155,7 +155,7 @@ function initChart(chartData) {
         series: [{
             name: 'Intermediate Optimization Results',
             allowPointSelect: true,
-            data: chartData,
+            data: (chartData && chartData.points) ? chartData.points : [],
             dataLabels: {
                 enabled: true,
                 x: 20,  // x offset for data label
