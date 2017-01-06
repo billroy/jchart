@@ -49,16 +49,17 @@ function init(chartData) {
     //    var point = chartData.points[Math.floor(Math.random() * chartData.points.length)];
     //    return new THREE.Vector3(point.x, point.y, point.z);
     //}
-    function getVertex(point_index) {
+    function getVector3(point_index) {
         var point = chartData.points[point_index];
         return new THREE.Vector3(point.x, point.y, point.z);
     }
 
-    var line_material = new THREE.LineBasicMaterial({color: 0x202020, opacity: 0.01});
+    //var line_material = new THREE.LineBasicMaterial({color: 0x202020, opacity: 0.01});
+    var line_material = new THREE.LineBasicMaterial({color: 0x808080, opacity: 0.01});
 
     if (chartData && chartData.connections) chartData.connections.forEach(function(connection) {
         var line_geometry = new THREE.Geometry();
-        line_geometry.vertices.push(getVertex(connection[0]), getVertex(connection[1]));
+        line_geometry.vertices.push(getVector3(connection[0]), getVector3(connection[1]));
         var line_layer = new THREE.Line(line_geometry, line_material);
         scene.add(line_layer);
     });
