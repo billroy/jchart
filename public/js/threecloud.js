@@ -11,6 +11,7 @@ function init(chartData) {
     //document.body.appendChild( container );
     container = document.getElementById('chart');
     camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 2, 5000 );
+    //camera = new THREE.OrthographicCamera(-2000, 2000, 2000, -2000, 1, 1000);
     camera.position.y = 200;
     camera.position.z = 2000;
     scene = new THREE.Scene();

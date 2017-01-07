@@ -43,6 +43,8 @@ to see how it works:
     cd jchart
     python test.py
 
+For more points, run "testbig.py"
+
 
 ## Command Line Options
 
@@ -53,3 +55,38 @@ Sets the http port for the jchart server.
 ### --logfile=none
 
 Sets the log file name.
+
+## Integration
+
+### How and where to post
+
+To generate a chart, POST an object of the following form, in JSON format,
+to http://localhost:3000/xychart.  Be sure to specify the content type header
+like this: "Content-type: application/json".
+
+### JSON POST data format
+
+Here is the general form of a chart request object:
+
+    {
+        title: "Sample data from test.py",
+        banner: "job:joel26 iteration: 34 chi^2=345.7",
+        points: [
+            {name: "alice", x: 100, y: 200, z: 300},
+            {name: "bob", x: 200, y: 100, z: 300},
+            {name: "charlie", x: 400, y: 200, z: 300}
+        ],
+        connections: [[0,1],[0,2],[1,2]]
+    }
+
+The title is displayed by the chart module.
+
+The banner is displayed in the web interface above the plot area; use it for
+metadata about the plot.
+
+Coordinates in the 'points' array should be in [-1000, 1000].
+
+The connections array is optional.  If specified, it contains pairs of points
+to connect with lines in the visualization.  A point is specified as 0-relative
+index into the points array, so [0,1] means "connect Alice and Bob" in this
+example.
