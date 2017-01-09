@@ -70,11 +70,11 @@ Here is the general form of a chart request object:
 
     {
         title: "Sample data from test.py",
-        banner: "job:joel26 iteration: 34 chi^2=345.7",
+        banner: "job: joel26 iteration: 34 chi^2: 345.7",
         points: [
-            {name: "alice", x: 100, y: 200, z: 300},
-            {name: "bob", x: 200, y: 100, z: 300},
-            {name: "charlie", x: 400, y: 200, z: 300}
+            {name: "alice", x: 100, y: 200, z: 300, color: "red"},
+            {name: "bob", x: 200, y: 100, z: 300, color: "blue"},
+            {name: "charlie", x: 400, y: 200, z: 300, color: "green"}
         ],
         connections: [[0,1],[0,2],[1,2]]
     }

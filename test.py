@@ -13,14 +13,14 @@ def rc():
     return random.choice(colors)
 
 data = {
-    title: 'Sample data from test.py',
-    banner: 'job:joel26 iteration: 34 chi^2=345.7',
-    points: [
+    'title': 'Sample data from test.py',
+    'banner': 'job:joel26 iteration: 34 chi^2=345.7',
+    'points': [
         {'name': 'alice', 'x': r(), 'y': r(), 'z': r(), 'color': rc()},
         {'name': 'bob', 'x': r(), 'y': r(), 'z': r(), 'color': rc()},
         {'name': 'charlie', 'x': r(), 'y': r(), 'z': r(), 'color': rc()}
-    ]
-    #connections: []
+    ],
+    'connections': [[0,1], [1,2], [0,2]]
 }
 print 'Posting:', data
 status = requests.post(url,
