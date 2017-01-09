@@ -23,7 +23,13 @@ data = {
     'connections': [[0,1], [1,2], [0,2]]
 }
 print 'Posting:', data
-status = requests.post(url,
+
+status = None
+try:
+    status = requests.post(url,
                         data=json.dumps(data),
-                        headers={'Content-Type': 'application/json'});
+                        headers={'Content-Type': 'application/json'},
+                        timeout=.010);
+except:
+    pass
 print 'Response:', status

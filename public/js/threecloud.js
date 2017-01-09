@@ -67,7 +67,11 @@ function init(chartData) {
 
     // axes
     function drawAxis(x, y, z, color) {
-        var axis_material = new THREE.LineBasicMaterial({color: color, opacity: .5});
+        var axis_material = new THREE.LineBasicMaterial({
+            color: color,
+            opacity: .5
+            // TODO: this option doesn't work: lineWidth: 5
+        });
         var axis_geometry = new THREE.Geometry();
         var start = new THREE.Vector3(0, 0, 0);
         var end = new THREE.Vector3(x, y, z);
