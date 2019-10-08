@@ -29,15 +29,20 @@ if (!argv.no_static) app.use('/', express.static(__dirname + '/public'));
 
 // receive POST requests with new chart data
 app.post('/xychart/', function(req, res) {
-    emitChart(req.body);     // send to connected clients
+    emitChart(req.body, 'chart');     // send to connected clients
+    return res.sendStatus(200);
+});
+
+app.post('/hairball/', function(req, res) {
+    emitChart(req.body, 'hairball');     // send to connected clients
     return res.sendStatus(200);
 });
 
 // send a chart update to all connected sockets
-function emitChart(chartData) {
-    console.log('Emitting chart:', chartData);
+function emitChart(chartData, chartType) {
+    console.log('Emitting chart:', chartData, chartType);
     sockets.forEach(function(socket) {
-        socket.emit('chart', chartData);
+        socket.emit(chartType, chartData);
     });
 
     if (argv.logfile && (argv.logfile != 'none')) {
