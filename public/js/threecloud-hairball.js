@@ -1,6 +1,7 @@
 //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 var container, stats;
 var camera, scene, renderer, particles, geometry, material, i, h, color, sprite, size;
+var dateGeometry, dateMaterial, dateParticles;
 var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
@@ -17,11 +18,13 @@ function init(chartData) {
     scene = new THREE.Scene();
     //scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
     geometry = new THREE.Geometry();
+    dateGeometry = new THREE.Geometry();
     sprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/disc.png" );
+    dateSprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/spark1.png" );
 
     // company points and labels
     if (chartData && chartData.companies) chartData.companies.forEach(function(point) {
-        var vertex = new THREE.Vector3(point.coords[0] * scale, point.coords[1] * scale, point.coords[2]* scale);
+        var vertex = new THREE.Vector3(point.coords[0] * scale, point.coords[1] * scale, point.coords[2] * scale);
         geometry.vertices.push(vertex);
 
         var spritey = makeTextSprite(point.ticker, {
@@ -29,7 +32,7 @@ function init(chartData) {
             borderColor: point.color || 'white',           // {r:255, g:0, b:0, a:1.0},
             backgroundColor: {r:32, g:32, b:32, a:0.8}
         });
-        spritey.position.set(point.coords[0] * scale, point.coords[1] * scale, point.coords[2]* scale);
+        spritey.position.set(point.coords[0] * scale, point.coords[1] * scale, point.coords[2] * scale);
         scene.add( spritey );
     });
 
@@ -45,10 +48,36 @@ function init(chartData) {
     particles = new THREE.Points( geometry, material );
     scene.add( particles );
 
+    // date labels
+    if (chartData && chartData.dates) chartData.dates.forEach(function(date) {
+        var vertex = new THREE.Vector3(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
+        dateGeometry.vertices.push(vertex);
+
+        var spritey = makeTextSprite(date.label, {
+            fontsize: 12,
+            borderColor: date.color || 'white',           // {r:255, g:0, b:0, a:1.0},
+            backgroundColor: {r:32, g:32, b:32, a:0.8}
+        });
+        spritey.position.set(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
+        scene.add( spritey );
+    });
+
+    dateMaterial = new THREE.PointsMaterial( {
+        map: dateSprite,
+        size: 16,
+        sizeAttenuation: true,
+        alphaTest: 0.5,
+        transparent: true,
+        color: 'white'
+    } );
+    //material.color.setHSL( 1.0, 0.3, 0.7 );
+    dateParticles = new THREE.Points( dateGeometry, dateMaterial );
+    scene.add( dateParticles );
+
     // connection lines between sequential dates
     function getVector3(date_index) {
         var point = chartData.dates[date_index];
-        return new THREE.Vector3(point.coords[0] * scale, point.coords[1] * scale, point.coords[2]* scale);
+        return new THREE.Vector3(point.coords[0] * scale, point.coords[1] * scale, point.coords[2] * scale);
     }
 
     //var line_material = new THREE.LineBasicMaterial({color: 0x202020, opacity: 0.01});
@@ -62,7 +91,6 @@ function init(chartData) {
             scene.add(line_layer);
         }
     };
-
 
     // axes
     function drawAxis(x, y, z, color) {
