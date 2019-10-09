@@ -11,10 +11,10 @@ function init(chartData) {
     //container = document.createElement( 'div' );
     //document.body.appendChild( container );
     container = document.getElementById('chart');
-    camera = new THREE.PerspectiveCamera( 120, window.innerWidth / window.innerHeight, 2, 5000 );
+    camera = new THREE.PerspectiveCamera( 120, window.innerWidth / window.innerHeight, 2, 3000 );
     //camera = new THREE.OrthographicCamera(-2000, 2000, 2000, -2000, 1, 1000);
     camera.position.y = 200;
-    camera.position.z = 2000;
+    camera.position.z = 1500;
     scene = new THREE.Scene();
     //scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
     geometry = new THREE.Geometry();
@@ -46,25 +46,27 @@ function init(chartData) {
     } );
     //material.color.setHSL( 1.0, 0.3, 0.7 );
     particles = new THREE.Points( geometry, material );
-    scene.add( particles );
+    //scene.add( particles );
 
     // date labels
     if (chartData && chartData.dates) chartData.dates.forEach(function(date) {
         var vertex = new THREE.Vector3(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
         dateGeometry.vertices.push(vertex);
 
-        var spritey = makeTextSprite(date.label, {
-            fontsize: 12,
+        var spritey = makeTextSprite(' ' + date.label + ' ', {
+            fontsize: 36,
             borderColor: date.color || 'white',           // {r:255, g:0, b:0, a:1.0},
+            borderThickness: 2,
             backgroundColor: {r:32, g:32, b:32, a:0.8}
         });
+        spritey.scale.set(20,10,1);
         spritey.position.set(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
         scene.add( spritey );
     });
 
     dateMaterial = new THREE.PointsMaterial( {
-        map: dateSprite,
-        size: 16,
+        map: sprite,    // dateSprite,
+        size: 4,
         sizeAttenuation: true,
         alphaTest: 0.5,
         transparent: true,
@@ -81,7 +83,10 @@ function init(chartData) {
     }
 
     //var line_material = new THREE.LineBasicMaterial({color: 0x202020, opacity: 0.01});
-    var line_material = new THREE.LineBasicMaterial({color: 0x808080, opacity: 0.01});
+    var line_material = new THREE.LineBasicMaterial({
+        color: 0x808080,
+        opacity: 0.01
+    });
 
     if (chartData && chartData.dates) {
         for (var i=1; i < chartData.dates.length; i++) {    // note we start from 1

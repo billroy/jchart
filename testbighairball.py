@@ -1,3 +1,4 @@
+import datetime
 import json
 import math
 import random
@@ -24,20 +25,36 @@ tp = ['corp', 'inc', 'pc', 'ltd']
 def rn():
     return random.choice(fn) + '.' + random.choice(ln) + '.' + random.choice(tp) + '.' + str(random.randrange(1000,9999))
 
+def rl():
+    return random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+
+def rt():
+    return rl() + rl() + rl() + rl()
+
 num_companies = 500
 companies = []
 for i in range(num_companies):
-    new_company = {'ticker': rn(), 'coords': [r(), r(), r()], 'color': rc()}
+    new_company = {'ticker': rt(), 'coords': [r(), r(), r()], 'color': rc()}
     print('New company:', new_company)
     companies.append(new_company)
 
 num_dates = 100
 dates = []
+date = datetime.date(2010,1,1)
+
 def rp():
     return int(random.random() * len(companies))
 
+x = 0
+y = 0
+z = 0
+
 for i in range(num_dates):
-    new_date = {'label': str(i), 'coords': [r(), r(), r()]}
+    x = x + r()/10
+    y = y + r()/10
+    z = z + r()/10 + .001
+    new_date = {'label': str(date), 'coords': [x, y, z]}
+    date += datetime.timedelta(days=1)
     dates.append(new_date)
 
 chart_spec = {
