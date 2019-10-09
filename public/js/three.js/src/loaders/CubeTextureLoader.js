@@ -1,18 +1,21 @@
-import { ImageLoader } from './ImageLoader';
-import { CubeTexture } from '../textures/CubeTexture';
-import { DefaultLoadingManager } from './LoadingManager';
-
 /**
  * @author mrdoob / http://mrdoob.com/
  */
 
+import { ImageLoader } from './ImageLoader.js';
+import { CubeTexture } from '../textures/CubeTexture.js';
+import { Loader } from './Loader.js';
+
+
 function CubeTextureLoader( manager ) {
 
-	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
+	Loader.call( this, manager );
 
 }
 
-Object.assign( CubeTextureLoader.prototype, {
+CubeTextureLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
+
+	constructor: CubeTextureLoader,
 
 	load: function ( urls, onLoad, onProgress, onError ) {
 
@@ -51,20 +54,6 @@ Object.assign( CubeTextureLoader.prototype, {
 		}
 
 		return texture;
-
-	},
-
-	setCrossOrigin: function ( value ) {
-
-		this.crossOrigin = value;
-		return this;
-
-	},
-
-	setPath: function ( value ) {
-
-		this.path = value;
-		return this;
 
 	}
 

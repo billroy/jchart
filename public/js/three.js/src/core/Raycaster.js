@@ -1,4 +1,4 @@
-import { Ray } from '../math/Ray';
+import { Ray } from '../math/Ray.js';
 
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -13,6 +13,7 @@ function Raycaster( origin, direction, near, far ) {
 
 	this.near = near || 0;
 	this.far = far || Infinity;
+	this.camera = null;
 
 	this.params = {
 		Mesh: {},
@@ -25,8 +26,10 @@ function Raycaster( origin, direction, near, far ) {
 	Object.defineProperties( this.params, {
 		PointCloud: {
 			get: function () {
+
 				console.warn( 'THREE.Raycaster: params.PointCloud has been renamed to params.Points.' );
 				return this.Points;
+
 			}
 		}
 	} );
@@ -59,11 +62,7 @@ function intersectObject( object, raycaster, intersects, recursive ) {
 
 }
 
-//
-
-Raycaster.prototype = {
-
-	constructor: Raycaster,
+Object.assign( Raycaster.prototype, {
 
 	linePrecision: 1,
 
@@ -77,15 +76,17 @@ Raycaster.prototype = {
 
 	setFromCamera: function ( coords, camera ) {
 
-		if ( (camera && camera.isPerspectiveCamera) ) {
+		if ( ( camera && camera.isPerspectiveCamera ) ) {
 
 			this.ray.origin.setFromMatrixPosition( camera.matrixWorld );
 			this.ray.direction.set( coords.x, coords.y, 0.5 ).unproject( camera ).sub( this.ray.origin ).normalize();
+			this.camera = camera;
 
-		} else if ( (camera && camera.isOrthographicCamera) ) {
+		} else if ( ( camera && camera.isOrthographicCamera ) ) {
 
 			this.ray.origin.set( coords.x, coords.y, ( camera.near + camera.far ) / ( camera.near - camera.far ) ).unproject( camera ); // set origin in plane of camera
 			this.ray.direction.set( 0, 0, - 1 ).transformDirection( camera.matrixWorld );
+			this.camera = camera;
 
 		} else {
 
@@ -95,9 +96,9 @@ Raycaster.prototype = {
 
 	},
 
-	intersectObject: function ( object, recursive ) {
+	intersectObject: function ( object, recursive, optionalTarget ) {
 
-		var intersects = [];
+		var intersects = optionalTarget || [];
 
 		intersectObject( object, this, intersects, recursive );
 
@@ -107,9 +108,9 @@ Raycaster.prototype = {
 
 	},
 
-	intersectObjects: function ( objects, recursive ) {
+	intersectObjects: function ( objects, recursive, optionalTarget ) {
 
-		var intersects = [];
+		var intersects = optionalTarget || [];
 
 		if ( Array.isArray( objects ) === false ) {
 
@@ -130,7 +131,7 @@ Raycaster.prototype = {
 
 	}
 
-};
+} );
 
 
 export { Raycaster };

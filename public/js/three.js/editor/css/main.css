@@ -41,31 +41,59 @@ textarea, input { outline: none; } /* osx */
 	user-select: none;
 }
 
-	.Panel.Collapsible .Static {
-		margin: 0;
-	}
+.TabbedPanel {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
 
-	.Panel.Collapsible .Static .Button {
-		float: left;
-		margin-right: 6px;
-		width: 0;
-		height: 0;
-		border: 6px solid transparent;
-	}
+	/* No support for these yet */
+	-o-user-select: none;
+	user-select: none;
+	position: relative;
+	display: block;
+	width: 100%;
+}
 
-	.Panel.Collapsible.collapsed .Static .Button {
-		margin-top: 2px;
-		border-left-color: #bbb;
-	}
+.TabbedPanel .Tabs {
+	position: relative;
+	display: block;
+	width: 100%;
+}
 
-	.Panel.Collapsible:not(.collapsed) .Static .Button {
-		margin-top: 6px;
-		border-top-color: #bbb;
-	}
+.TabbedPanel .Tabs .Tab {
+	padding: 10px;
+	vertical-align: middle;
+	text-transform: uppercase;
+}
 
-	.Panel.Collapsible.collapsed .Content {
-		display: none;
-	}
+.TabbedPanel .Tabs .Panels {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/* Listbox */
+.Listbox {
+	color: #444;
+	background-color: #fff;
+	padding: 0;
+	width: 100%;
+	min-height: 140px;
+	font-size: 12px;
+	cursor: default;
+	overflow: auto;
+}
+
+.Listbox .ListboxItem {
+	padding: 6px;
+	color: #666;
+	white-space: nowrap;
+}
+
+.Listbox .ListboxItem.active {
+	background-color: rgba(0, 0, 0, 0.04);
+}
 
 /* CodeMirror */
 

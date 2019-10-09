@@ -49,7 +49,7 @@ select {
 	top: 32px;
 	left: 0;
 	right: 300px;
-	bottom: 32px;
+	bottom: 0;
 }
 
 	#viewport #info {
@@ -62,7 +62,7 @@ select {
 	top: 32px;
 	left: 0;
 	right: 300px;
-	bottom: 32px;
+	bottom: 0;
 	opacity: 0.9;
 }
 
@@ -71,7 +71,7 @@ select {
 	top: 32px;
 	left: 0;
 	right: 300px;
-	bottom: 32px;
+	bottom: 0;
 }
 
 #menubar {
@@ -103,14 +103,17 @@ select {
 			color: #888;
 			margin: 0;
 			padding: 8px;
+			line-height: 16px;
 		}
 
 		#menubar .menu .options {
-			position: absolute;
+			position: fixed;
 			display: none;
 			padding: 5px 0;
 			background: #eee;
 			width: 150px;
+			max-height: calc(100% - 80px);
+			overflow: auto;
 		}
 
 		#menubar .menu:hover .options {
@@ -192,9 +195,9 @@ select {
 
 #toolbar {
 	position: absolute;
-	left: 0;
-	right: 300px;
-	bottom: 0;
+	left: calc(50% - 290px); /* ( ( 100% - 300px ) / 2.0 ) - 140px */
+	width: 280px;
+	bottom: 16px;
 	height: 32px;
 	background: #eee;
 	color: #333;
@@ -211,6 +214,8 @@ select {
 
 	#toolbar button {
 		margin-right: 6px;
+		line-height: 14px;
+		height: 24px;
 	}
 
 .Outliner {
@@ -238,3 +243,75 @@ select {
 	.Outliner .option.active {
 		background-color: rgba(0,0,0,0.04);
 	}
+
+
+.TabbedPanel .Tabs {
+	background-color: #ddd;
+	border-top: 1px solid #ccc;
+}
+
+	.TabbedPanel .Tab {
+		color: #aaa;
+		border-right: 1px solid #ccc;
+	}
+
+	.TabbedPanel .Tab.selected {
+		color: #888;
+		background-color: #eee;
+	}
+
+.Listbox {
+	color: #444;
+	background-color: #fff;
+}
+
+.Panel {
+	color: #888;
+}
+/* */
+
+@media all and ( max-width: 600px ) {
+
+	#menubar .menu .options {
+		max-height: calc(100% - 372px);
+	}
+
+	#menubar .menu.right {
+		display: none;
+	}
+
+	#viewport {
+		left: 0;
+		right: 0;
+		top: 32px;
+		height: calc(100% - 352px);
+	}
+
+	#script {
+		left: 0;
+		right: 0;
+		top: 32px;
+		height: calc(100% - 352px);
+	}
+
+	#player {
+		left: 0;
+		right: 0;
+		top: 32px;
+		height: calc(100% - 352px);
+	}
+
+	#sidebar {
+		left: 0;
+		width: 100%;
+		top: calc(100% - 320px);
+		bottom: 0;
+	}
+
+	#toolbar {
+		left: calc(50% - 140px);
+		width: 280px;
+		top: 68px;
+	}
+
+}

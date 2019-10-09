@@ -4,73 +4,35 @@
 		<title>three.js webgl - loader - ttf</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body
-			{
-				font-family: Monospace;
-				background-color: #000;
-				color: #fff;
-				margin: 0px;
-				overflow: hidden;
-			}
-			#info
-			{
-				position: absolute;
-				top: 10px;
-				width: 100%;
-				text-align: center;
-				z-index: 100;
-				display:block;
-			}
-			#info a, .button
-			{
-				color: #f00;
-				font-weight: bold;
-				text-decoration: underline;
-				cursor: pointer
-			}
-		</style>
+		<link type="text/css" rel="stylesheet" href="main.css">
 	</head>
 	<body>
-		<script src="../build/three.js"></script>
-		<script src="js/utils/GeometryUtils.js"></script>
-		<script src="js/Detector.js"></script>
-		<script src="js/loaders/TTFLoader.js"></script>
 		<script src="js/libs/opentype.min.js"></script>
 		<div id="info">
-			<a href="http://threejs.org" target="_blank">three.js</a> - TTFLoader using opentype by gero3
+			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - TTFLoader using opentype by gero3
 			<br/>type to enter new text, drag to spin the text
-			<br/><span class="button" id="color">change color</span>,
-			<span class="button" id="bevel">change bevel</span>
 		</div>
 
+		<script type="module">
 
-		<script>
+			import * as THREE from '../build/three.module.js';
 
-			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+			import { TTFLoader } from './jsm/loaders/TTFLoader.js';
 
-			THREE.Cache.enabled = true;
-
-			var container, hex, color;
-
+			var container;
 			var camera, cameraTarget, scene, renderer;
-
 			var group, textMesh1, textMesh2, textGeo, material;
-
 			var firstLetter = true;
 
-			var text = "three.js",
+			var text = 'three.js',
 				height = 20,
 				size = 70,
 				hover = 30,
 				curveSegments = 4,
 				bevelThickness = 2,
-				bevelSize = 1.5,
-				bevelSegments = 3,
-				bevelEnabled = true;
+				bevelSize = 1.5;
 
 			var font = null;
-
 			var mirror = true;
 
 			var targetRotation = 0;
@@ -80,18 +42,9 @@
 			var mouseXOnMouseDown = 0;
 
 			var windowHalfX = window.innerWidth / 2;
-			var windowHalfY = window.innerHeight / 2;
 
 			init();
 			animate();
-
-			function decimalToHex( d ) {
-
-				var hex = Number( d ).toString( 16 );
-				hex = "000000".substr( 0, 6 - hex.length ) + hex;
-				return hex.toUpperCase();
-
-			}
 
 			function init() {
 
@@ -108,6 +61,7 @@
 				// SCENE
 
 				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0x000000 );
 				scene.fog = new THREE.Fog( 0x000000, 250, 1400 );
 
 				// LIGHTS
@@ -118,50 +72,23 @@
 
 				var pointLight = new THREE.PointLight( 0xffffff, 1.5 );
 				pointLight.position.set( 0, 100, 90 );
+				pointLight.color.setHSL( Math.random(), 1, 0.5 );
 				scene.add( pointLight );
 
-				// Get text from hash
-
-				var hash = document.location.hash.substr( 1 );
-
-				if ( hash.length !== 0 ) {
-
-					var colorhash  = hash.substring( 0, 6 );
-					var fonthash   = hash.substring( 6, 7 );
-					var weighthash = hash.substring( 7, 8 );
-					var bevelhash  = hash.substring( 8, 9 );
-					var texthash   = hash.substring( 10 );
-
-					hex = colorhash;
-					pointLight.color.setHex( parseInt( colorhash, 16 ) );
-
-					fontName = reverseFontMap[ parseInt( fonthash ) ];
-					fontWeight = reverseWeightMap[ parseInt( weighthash ) ];
-
-					bevelEnabled = parseInt( bevelhash );
-
-					text = decodeURI( texthash );
-
-				} else {
-
-					pointLight.color.setHSL( Math.random(), 1, 0.5 );
-					hex = decimalToHex( pointLight.color.getHex() );
-
-				}
-
-				material = new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
+				material = new THREE.MeshPhongMaterial( { color: 0xffffff, flatShading: true } );
 
 				group = new THREE.Group();
 				group.position.y = 100;
 
 				scene.add( group );
 
-				var loader = new THREE.TTFLoader();
+				var loader = new TTFLoader();
 
 				loader.load( 'fonts/ttf/kenpixel.ttf', function ( json ) {
-					font = new THREE.Font(json);
-					//scene.add( font );
+
+					font = new THREE.Font( json );
 					createText();
+
 				} );
 
 				var plane = new THREE.Mesh(
@@ -175,7 +102,6 @@
 				// RENDERER
 
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
-				renderer.setClearColor( scene.fog.color );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer.domElement );
@@ -188,29 +114,13 @@
 				document.addEventListener( 'keypress', onDocumentKeyPress, false );
 				document.addEventListener( 'keydown', onDocumentKeyDown, false );
 
-				document.getElementById( "color" ).addEventListener( 'click', function() {
-
-					pointLight.color.setHSL( Math.random(), 1, 0.5 );
-					hex = decimalToHex( pointLight.color.getHex() );
-
-				}, false );
-
-				document.getElementById( "bevel" ).addEventListener( 'click', function(){
-
-					bevelEnabled = !bevelEnabled;
-
-					refreshText();
-
-				}, false );
-
-
 				window.addEventListener( 'resize', onWindowResize, false );
+
 			}
 
 			function onWindowResize() {
 
 				windowHalfX = window.innerWidth / 2;
-				windowHalfY = window.innerHeight / 2;
 
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
@@ -224,7 +134,7 @@
 				if ( firstLetter ) {
 
 					firstLetter = false;
-					text = "";
+					text = '';
 
 				}
 
@@ -232,7 +142,7 @@
 
 				// backspace
 
-				if ( keyCode == 8 ) {
+				if ( keyCode === 8 ) {
 
 					event.preventDefault();
 
@@ -251,7 +161,7 @@
 
 				// backspace
 
-				if ( keyCode == 8 ) {
+				if ( keyCode === 8 ) {
 
 					event.preventDefault();
 
@@ -268,7 +178,7 @@
 
 			function createText() {
 
-				textGeo = new THREE.TextGeometry( text, {
+				textGeo = new THREE.TextBufferGeometry( text, {
 
 					font: font,
 
@@ -278,59 +188,14 @@
 
 					bevelThickness: bevelThickness,
 					bevelSize: bevelSize,
-					bevelEnabled: bevelEnabled,
+					bevelEnabled: true
 
-					material: 0,
-					extrudeMaterial: 1
-
-				});
+				} );
 
 				textGeo.computeBoundingBox();
 				textGeo.computeVertexNormals();
 
-				// "fix" side normals by removing z-component of normals for side faces
-				// (this doesn't work well for beveled geometry as then we lose nice curvature around z-axis)
-
-				if ( ! bevelEnabled ) {
-
-					var triangleAreaHeuristics = 0.1 * ( height * size );
-
-					for ( var i = 0; i < textGeo.faces.length; i ++ ) {
-
-						var face = textGeo.faces[ i ];
-
-						if ( face.materialIndex == 1 ) {
-
-							for ( var j = 0; j < face.vertexNormals.length; j ++ ) {
-
-								face.vertexNormals[ j ].z = 0;
-								face.vertexNormals[ j ].normalize();
-
-							}
-
-							var va = textGeo.vertices[ face.a ];
-							var vb = textGeo.vertices[ face.b ];
-							var vc = textGeo.vertices[ face.c ];
-
-							var s = THREE.GeometryUtils.triangleArea( va, vb, vc );
-
-							if ( s > triangleAreaHeuristics ) {
-
-								for ( var j = 0; j < face.vertexNormals.length; j ++ ) {
-
-									face.vertexNormals[ j ].copy( face.normal );
-
-								}
-
-							}
-
-						}
-
-					}
-
-				}
-
-				var centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+				var centerOffset = - 0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
 
 				textMesh1 = new THREE.Mesh( textGeo, material );
 
@@ -348,7 +213,7 @@
 					textMesh2 = new THREE.Mesh( textGeo, material );
 
 					textMesh2.position.x = centerOffset;
-					textMesh2.position.y = -hover;
+					textMesh2.position.y = - hover;
 					textMesh2.position.z = height;
 
 					textMesh2.rotation.x = Math.PI;
@@ -365,7 +230,7 @@
 				group.remove( textMesh1 );
 				if ( mirror ) group.remove( textMesh2 );
 
-				if ( !text ) return;
+				if ( ! text ) return;
 
 				createText();
 
@@ -392,7 +257,7 @@
 
 			}
 
-			function onDocumentMouseUp( event ) {
+			function onDocumentMouseUp() {
 
 				document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
 				document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
@@ -400,7 +265,7 @@
 
 			}
 
-			function onDocumentMouseOut( event ) {
+			function onDocumentMouseOut() {
 
 				document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
 				document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
@@ -410,7 +275,7 @@
 
 			function onDocumentTouchStart( event ) {
 
-				if ( event.touches.length == 1 ) {
+				if ( event.touches.length === 1 ) {
 
 					event.preventDefault();
 
@@ -423,7 +288,7 @@
 
 			function onDocumentTouchMove( event ) {
 
-				if ( event.touches.length == 1 ) {
+				if ( event.touches.length === 1 ) {
 
 					event.preventDefault();
 

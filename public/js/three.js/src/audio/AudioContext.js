@@ -1,22 +1,26 @@
-var context;
+/**
+ * @author mrdoob / http://mrdoob.com/
+ */
+
+var _context;
 
 var AudioContext = {
 
 	getContext: function () {
 
-		if ( context === undefined ) {
+		if ( _context === undefined ) {
 
-			context = new ( window.AudioContext || window.webkitAudioContext )();
+			_context = new ( window.AudioContext || window.webkitAudioContext )();
 
 		}
 
-		return context;
+		return _context;
 
 	},
 
 	setContext: function ( value ) {
 
-		context = value;
+		_context = value;
 
 	}
 

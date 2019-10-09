@@ -1,6 +1,6 @@
-import { Font } from '../extras/core/Font';
-import { FileLoader } from './FileLoader';
-import { DefaultLoadingManager } from './LoadingManager';
+import { Font } from '../extras/core/Font.js';
+import { FileLoader } from './FileLoader.js';
+import { Loader } from './Loader.js';
 
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -8,17 +8,20 @@ import { DefaultLoadingManager } from './LoadingManager';
 
 function FontLoader( manager ) {
 
-	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
+	Loader.call( this, manager );
 
 }
 
-Object.assign( FontLoader.prototype, {
+FontLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
+
+	constructor: FontLoader,
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
 		var scope = this;
 
 		var loader = new FileLoader( this.manager );
+		loader.setPath( this.path );
 		loader.load( url, function ( text ) {
 
 			var json;

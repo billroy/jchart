@@ -1,13 +1,16 @@
-import { Quaternion } from './Quaternion';
-import { Vector3 } from './Vector3';
-import { Matrix4 } from './Matrix4';
-import { _Math } from './Math';
+import { Quaternion } from './Quaternion.js';
+import { Vector3 } from './Vector3.js';
+import { Matrix4 } from './Matrix4.js';
+import { _Math } from './Math.js';
 
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author WestLangley / http://github.com/WestLangley
  * @author bhouston / http://clara.io
  */
+
+var _matrix = new Matrix4();
+var _quaternion = new Quaternion();
 
 function Euler( x, y, z, order ) {
 
@@ -22,63 +25,81 @@ Euler.RotationOrders = [ 'XYZ', 'YZX', 'ZXY', 'XZY', 'YXZ', 'ZYX' ];
 
 Euler.DefaultOrder = 'XYZ';
 
-Euler.prototype = {
+Object.defineProperties( Euler.prototype, {
 
-	constructor: Euler,
+	x: {
+
+		get: function () {
+
+			return this._x;
+
+		},
+
+		set: function ( value ) {
+
+			this._x = value;
+			this._onChangeCallback();
+
+		}
+
+	},
+
+	y: {
+
+		get: function () {
+
+			return this._y;
+
+		},
+
+		set: function ( value ) {
+
+			this._y = value;
+			this._onChangeCallback();
+
+		}
+
+	},
+
+	z: {
+
+		get: function () {
+
+			return this._z;
+
+		},
+
+		set: function ( value ) {
+
+			this._z = value;
+			this._onChangeCallback();
+
+		}
+
+	},
+
+	order: {
+
+		get: function () {
+
+			return this._order;
+
+		},
+
+		set: function ( value ) {
+
+			this._order = value;
+			this._onChangeCallback();
+
+		}
+
+	}
+
+} );
+
+Object.assign( Euler.prototype, {
 
 	isEuler: true,
-
-	get x () {
-
-		return this._x;
-
-	},
-
-	set x ( value ) {
-
-		this._x = value;
-		this.onChangeCallback();
-
-	},
-
-	get y () {
-
-		return this._y;
-
-	},
-
-	set y ( value ) {
-
-		this._y = value;
-		this.onChangeCallback();
-
-	},
-
-	get z () {
-
-		return this._z;
-
-	},
-
-	set z ( value ) {
-
-		this._z = value;
-		this.onChangeCallback();
-
-	},
-
-	get order () {
-
-		return this._order;
-
-	},
-
-	set order ( value ) {
-
-		this._order = value;
-		this.onChangeCallback();
-
-	},
 
 	set: function ( x, y, z, order ) {
 
@@ -87,7 +108,7 @@ Euler.prototype = {
 		this._z = z;
 		this._order = order || this._order;
 
-		this.onChangeCallback();
+		this._onChangeCallback();
 
 		return this;
 
@@ -106,7 +127,7 @@ Euler.prototype = {
 		this._z = euler._z;
 		this._order = euler._order;
 
-		this.onChangeCallback();
+		this._onChangeCallback();
 
 		return this;
 
@@ -129,7 +150,7 @@ Euler.prototype = {
 
 			this._y = Math.asin( clamp( m13, - 1, 1 ) );
 
-			if ( Math.abs( m13 ) < 0.99999 ) {
+			if ( Math.abs( m13 ) < 0.9999999 ) {
 
 				this._x = Math.atan2( - m23, m33 );
 				this._z = Math.atan2( - m12, m11 );
@@ -145,7 +166,7 @@ Euler.prototype = {
 
 			this._x = Math.asin( - clamp( m23, - 1, 1 ) );
 
-			if ( Math.abs( m23 ) < 0.99999 ) {
+			if ( Math.abs( m23 ) < 0.9999999 ) {
 
 				this._y = Math.atan2( m13, m33 );
 				this._z = Math.atan2( m21, m22 );
@@ -161,7 +182,7 @@ Euler.prototype = {
 
 			this._x = Math.asin( clamp( m32, - 1, 1 ) );
 
-			if ( Math.abs( m32 ) < 0.99999 ) {
+			if ( Math.abs( m32 ) < 0.9999999 ) {
 
 				this._y = Math.atan2( - m31, m33 );
 				this._z = Math.atan2( - m12, m22 );
@@ -177,7 +198,7 @@ Euler.prototype = {
 
 			this._y = Math.asin( - clamp( m31, - 1, 1 ) );
 
-			if ( Math.abs( m31 ) < 0.99999 ) {
+			if ( Math.abs( m31 ) < 0.9999999 ) {
 
 				this._x = Math.atan2( m32, m33 );
 				this._z = Math.atan2( m21, m11 );
@@ -193,7 +214,7 @@ Euler.prototype = {
 
 			this._z = Math.asin( clamp( m21, - 1, 1 ) );
 
-			if ( Math.abs( m21 ) < 0.99999 ) {
+			if ( Math.abs( m21 ) < 0.9999999 ) {
 
 				this._x = Math.atan2( - m23, m22 );
 				this._y = Math.atan2( - m31, m11 );
@@ -209,7 +230,7 @@ Euler.prototype = {
 
 			this._z = Math.asin( - clamp( m12, - 1, 1 ) );
 
-			if ( Math.abs( m12 ) < 0.99999 ) {
+			if ( Math.abs( m12 ) < 0.9999999 ) {
 
 				this._x = Math.atan2( m32, m22 );
 				this._y = Math.atan2( m13, m11 );
@@ -229,27 +250,19 @@ Euler.prototype = {
 
 		this._order = order;
 
-		if ( update !== false ) this.onChangeCallback();
+		if ( update !== false ) this._onChangeCallback();
 
 		return this;
 
 	},
 
-	setFromQuaternion: function () {
+	setFromQuaternion: function ( q, order, update ) {
 
-		var matrix;
+		_matrix.makeRotationFromQuaternion( q );
 
-		return function setFromQuaternion( q, order, update ) {
+		return this.setFromRotationMatrix( _matrix, order, update );
 
-			if ( matrix === undefined ) matrix = new Matrix4();
-
-			matrix.makeRotationFromQuaternion( q );
-
-			return this.setFromRotationMatrix( matrix, order, update );
-
-		};
-
-	}(),
+	},
 
 	setFromVector3: function ( v, order ) {
 
@@ -257,21 +270,15 @@ Euler.prototype = {
 
 	},
 
-	reorder: function () {
+	reorder: function ( newOrder ) {
 
 		// WARNING: this discards revolution information -bhouston
 
-		var q = new Quaternion();
+		_quaternion.setFromEuler( this );
 
-		return function reorder( newOrder ) {
+		return this.setFromQuaternion( _quaternion, newOrder );
 
-			q.setFromEuler( this );
-
-			return this.setFromQuaternion( q, newOrder );
-
-		};
-
-	}(),
+	},
 
 	equals: function ( euler ) {
 
@@ -286,7 +293,7 @@ Euler.prototype = {
 		this._z = array[ 2 ];
 		if ( array[ 3 ] !== undefined ) this._order = array[ 3 ];
 
-		this.onChangeCallback();
+		this._onChangeCallback();
 
 		return this;
 
@@ -320,17 +327,17 @@ Euler.prototype = {
 
 	},
 
-	onChange: function ( callback ) {
+	_onChange: function ( callback ) {
 
-		this.onChangeCallback = callback;
+		this._onChangeCallback = callback;
 
 		return this;
 
 	},
 
-	onChangeCallback: function () {}
+	_onChangeCallback: function () {}
 
-};
+} );
 
 
 export { Euler };

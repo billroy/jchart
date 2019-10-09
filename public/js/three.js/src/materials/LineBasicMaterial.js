@@ -1,5 +1,5 @@
-import { Material } from './Material';
-import { Color } from '../math/Color';
+import { Material } from './Material.js';
+import { Color } from '../math/Color.js';
 
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -26,8 +26,6 @@ function LineBasicMaterial( parameters ) {
 	this.linewidth = 1;
 	this.linecap = 'round';
 	this.linejoin = 'round';
-
-	this.lights = false;
 
 	this.setValues( parameters );
 

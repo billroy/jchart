@@ -1,5 +1,5 @@
-import { Material } from './Material';
-import { BasicDepthPacking } from '../constants';
+import { Material } from './Material.js';
+import { BasicDepthPacking } from '../constants.js';
 
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -47,7 +47,6 @@ function MeshDepthMaterial( parameters ) {
 	this.wireframeLinewidth = 1;
 
 	this.fog = false;
-	this.lights = false;
 
 	this.setValues( parameters );
 

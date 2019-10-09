@@ -15,9 +15,43 @@ function Vector4( x, y, z, w ) {
 
 }
 
-Vector4.prototype = {
+Object.defineProperties( Vector4.prototype, {
 
-	constructor: Vector4,
+	"width": {
+
+		get: function () {
+
+			return this.z;
+
+		},
+
+		set: function ( value ) {
+
+			this.z = value;
+
+		}
+
+	},
+
+	"height": {
+
+		get: function () {
+
+			return this.w;
+
+		},
+
+		set: function ( value ) {
+
+			this.w = value;
+
+		}
+
+	}
+
+} );
+
+Object.assign( Vector4.prototype, {
 
 	isVector4: true,
 
@@ -215,21 +249,10 @@ Vector4.prototype = {
 
 	multiplyScalar: function ( scalar ) {
 
-		if ( isFinite( scalar ) ) {
-
-			this.x *= scalar;
-			this.y *= scalar;
-			this.z *= scalar;
-			this.w *= scalar;
-
-		} else {
-
-			this.x = 0;
-			this.y = 0;
-			this.z = 0;
-			this.w = 0;
-
-		}
+		this.x *= scalar;
+		this.y *= scalar;
+		this.z *= scalar;
+		this.w *= scalar;
 
 		return this;
 
@@ -267,15 +290,15 @@ Vector4.prototype = {
 
 		if ( s < 0.0001 ) {
 
-			 this.x = 1;
-			 this.y = 0;
-			 this.z = 0;
+			this.x = 1;
+			this.y = 0;
+			this.z = 0;
 
 		} else {
 
-			 this.x = q.x / s;
-			 this.y = q.y / s;
-			 this.z = q.z / s;
+			this.x = q.x / s;
+			this.y = q.y / s;
+			this.z = q.z / s;
 
 		}
 
@@ -437,7 +460,7 @@ Vector4.prototype = {
 
 	clamp: function ( min, max ) {
 
-		// This function assumes min < max, if this assumption isn't true it will not operate correctly
+		// assumes min < max, componentwise
 
 		this.x = Math.max( min.x, Math.min( max.x, this.x ) );
 		this.y = Math.max( min.y, Math.min( max.y, this.y ) );
@@ -448,27 +471,24 @@ Vector4.prototype = {
 
 	},
 
-	clampScalar: function () {
+	clampScalar: function ( minVal, maxVal ) {
 
-		var min, max;
+		this.x = Math.max( minVal, Math.min( maxVal, this.x ) );
+		this.y = Math.max( minVal, Math.min( maxVal, this.y ) );
+		this.z = Math.max( minVal, Math.min( maxVal, this.z ) );
+		this.w = Math.max( minVal, Math.min( maxVal, this.w ) );
 
-		return function clampScalar( minVal, maxVal ) {
+		return this;
 
-			if ( min === undefined ) {
+	},
 
-				min = new Vector4();
-				max = new Vector4();
+	clampLength: function ( min, max ) {
 
-			}
+		var length = this.length();
 
-			min.set( minVal, minVal, minVal, minVal );
-			max.set( maxVal, maxVal, maxVal, maxVal );
+		return this.divideScalar( length || 1 ).multiplyScalar( Math.max( min, Math.min( max, length ) ) );
 
-			return this.clamp( min, max );
-
-		};
-
-	}(),
+	},
 
 	floor: function () {
 
@@ -543,7 +563,7 @@ Vector4.prototype = {
 
 	},
 
-	lengthManhattan: function () {
+	manhattanLength: function () {
 
 		return Math.abs( this.x ) + Math.abs( this.y ) + Math.abs( this.z ) + Math.abs( this.w );
 
@@ -551,13 +571,13 @@ Vector4.prototype = {
 
 	normalize: function () {
 
-		return this.divideScalar( this.length() );
+		return this.divideScalar( this.length() || 1 );
 
 	},
 
 	setLength: function ( length ) {
 
-		return this.multiplyScalar( length / this.length() );
+		return this.normalize().multiplyScalar( length );
 
 	},
 
@@ -611,11 +631,11 @@ Vector4.prototype = {
 
 	},
 
-	fromAttribute: function ( attribute, index, offset ) {
+	fromBufferAttribute: function ( attribute, index, offset ) {
 
 		if ( offset !== undefined ) {
 
-			console.warn( 'THREE.Vector4: offset has been removed from .fromAttribute().' );
+			console.warn( 'THREE.Vector4: offset has been removed from .fromBufferAttribute().' );
 
 		}
 
@@ -628,7 +648,7 @@ Vector4.prototype = {
 
 	}
 
-};
+} );
 
 
 export { Vector4 };

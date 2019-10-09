@@ -2,7 +2,7 @@
  * @author mrdoob / http://mrdoob.com/
  */
 
-function WebGLBufferRenderer( gl, extensions, infoRender ) {
+function WebGLBufferRenderer( gl, extensions, info, capabilities ) {
 
 	var mode;
 
@@ -16,54 +16,46 @@ function WebGLBufferRenderer( gl, extensions, infoRender ) {
 
 		gl.drawArrays( mode, start, count );
 
-		infoRender.calls ++;
-		infoRender.vertices += count;
-
-		if ( mode === gl.TRIANGLES ) infoRender.faces += count / 3;
+		info.update( count, mode );
 
 	}
 
-	function renderInstances( geometry ) {
+	function renderInstances( geometry, start, count, primcount ) {
 
-		var extension = extensions.get( 'ANGLE_instanced_arrays' );
+		if ( primcount === 0 ) return;
 
-		if ( extension === null ) {
+		var extension, methodName;
 
-			console.error( 'THREE.WebGLBufferRenderer: using THREE.InstancedBufferGeometry but hardware does not support extension ANGLE_instanced_arrays.' );
-			return;
+		if ( capabilities.isWebGL2 ) {
 
-		}
-
-		var position = geometry.attributes.position;
-
-		var count = 0;
-
-		if ( position.isInterleavedBufferAttribute ) {
-
-			count = position.data.count;
-
-			extension.drawArraysInstancedANGLE( mode, 0, count, geometry.maxInstancedCount );
+			extension = gl;
+			methodName = 'drawArraysInstanced';
 
 		} else {
 
-			count = position.count;
+			extension = extensions.get( 'ANGLE_instanced_arrays' );
+			methodName = 'drawArraysInstancedANGLE';
 
-			extension.drawArraysInstancedANGLE( mode, 0, count, geometry.maxInstancedCount );
+			if ( extension === null ) {
+
+				console.error( 'THREE.WebGLBufferRenderer: using THREE.InstancedBufferGeometry but hardware does not support extension ANGLE_instanced_arrays.' );
+				return;
+
+			}
 
 		}
 
-		infoRender.calls ++;
-		infoRender.vertices += count * geometry.maxInstancedCount;
+		extension[ methodName ]( mode, start, count, primcount );
 
-		if ( mode === gl.TRIANGLES ) infoRender.faces += geometry.maxInstancedCount * count / 3;
+		info.update( count, mode, primcount );
 
 	}
 
-	return {
-		setMode: setMode,
-		render: render,
-		renderInstances: renderInstances
-	};
+	//
+
+	this.setMode = setMode;
+	this.render = render;
+	this.renderInstances = renderInstances;
 
 }
 

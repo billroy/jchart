@@ -3,6 +3,14 @@
  * @author mrdoob / http://mrdoob.com/
  */
 
+var _lut = [];
+
+for ( var i = 0; i < 256; i ++ ) {
+
+	_lut[ i ] = ( i < 16 ? '0' : '' ) + ( i ).toString( 16 );
+
+}
+
 var _Math = {
 
 	DEG2RAD: Math.PI / 180,
@@ -10,40 +18,21 @@ var _Math = {
 
 	generateUUID: function () {
 
-		// http://www.broofa.com/Tools/Math.uuid.htm
+		// http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136
 
-		var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split( '' );
-		var uuid = new Array( 36 );
-		var rnd = 0, r;
+		var d0 = Math.random() * 0xffffffff | 0;
+		var d1 = Math.random() * 0xffffffff | 0;
+		var d2 = Math.random() * 0xffffffff | 0;
+		var d3 = Math.random() * 0xffffffff | 0;
+		var uuid = _lut[ d0 & 0xff ] + _lut[ d0 >> 8 & 0xff ] + _lut[ d0 >> 16 & 0xff ] + _lut[ d0 >> 24 & 0xff ] + '-' +
+			_lut[ d1 & 0xff ] + _lut[ d1 >> 8 & 0xff ] + '-' + _lut[ d1 >> 16 & 0x0f | 0x40 ] + _lut[ d1 >> 24 & 0xff ] + '-' +
+			_lut[ d2 & 0x3f | 0x80 ] + _lut[ d2 >> 8 & 0xff ] + '-' + _lut[ d2 >> 16 & 0xff ] + _lut[ d2 >> 24 & 0xff ] +
+			_lut[ d3 & 0xff ] + _lut[ d3 >> 8 & 0xff ] + _lut[ d3 >> 16 & 0xff ] + _lut[ d3 >> 24 & 0xff ];
 
-		return function generateUUID() {
+		// .toUpperCase() here flattens concatenated strings to save heap memory space.
+		return uuid.toUpperCase();
 
-			for ( var i = 0; i < 36; i ++ ) {
-
-				if ( i === 8 || i === 13 || i === 18 || i === 23 ) {
-
-					uuid[ i ] = '-';
-
-				} else if ( i === 14 ) {
-
-					uuid[ i ] = '4';
-
-				} else {
-
-					if ( rnd <= 0x02 ) rnd = 0x2000000 + ( Math.random() * 0x1000000 ) | 0;
-					r = rnd & 0xf;
-					rnd = rnd >> 4;
-					uuid[ i ] = chars[ ( i === 19 ) ? ( r & 0x3 ) | 0x8 : r ];
-
-				}
-
-			}
-
-			return uuid.join( '' );
-
-		};
-
-	}(),
+	},
 
 	clamp: function ( value, min, max ) {
 
@@ -142,23 +131,15 @@ var _Math = {
 
 	},
 
-	nearestPowerOfTwo: function ( value ) {
+	ceilPowerOfTwo: function ( value ) {
 
-		return Math.pow( 2, Math.round( Math.log( value ) / Math.LN2 ) );
+		return Math.pow( 2, Math.ceil( Math.log( value ) / Math.LN2 ) );
 
 	},
 
-	nextPowerOfTwo: function ( value ) {
+	floorPowerOfTwo: function ( value ) {
 
-		value --;
-		value |= value >> 1;
-		value |= value >> 2;
-		value |= value >> 4;
-		value |= value >> 8;
-		value |= value >> 16;
-		value ++;
-
-		return value;
+		return Math.pow( 2, Math.floor( Math.log( value ) / Math.LN2 ) );
 
 	}
 
