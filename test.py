@@ -22,7 +22,7 @@ data = {
     ],
     'connections': [[0,1], [1,2], [0,2]]
 }
-print 'Posting:', data
+print('Posting:', data)
 
 status = None
 try:
@@ -32,4 +32,4 @@ try:
                         timeout=.010);
 except:
     pass
-print 'Response:', status
+print('Response:', status)

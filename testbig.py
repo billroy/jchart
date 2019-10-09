@@ -27,7 +27,7 @@ num_points = 500
 points = []
 for i in range(num_points):
     new_point = {'name': rn(), 'x': r(), 'y': r(), 'z': r(), 'color': rc()}
-    print 'New point:', new_point
+    print('New point:', new_point)
     points.append(new_point)
 
 num_connections = 50
@@ -47,10 +47,10 @@ chart_spec = {
 }
 
 payload = json.dumps(chart_spec)
-print 'Data length:', len(payload)
+print('Data length:', len(payload))
 #print 'Posting:', data
 
 status = requests.post(url,
                         data=payload,
                         headers={'Content-Type': 'application/json'});
-print 'Response:', status
+print('Response:', status)
