@@ -66,7 +66,7 @@ function init(chartData) {
 
     dateMaterial = new THREE.PointsMaterial( {
         map: sprite,    // dateSprite,
-        size: 4,
+        size: 2,
         sizeAttenuation: true,
         alphaTest: 0.5,
         transparent: true,
