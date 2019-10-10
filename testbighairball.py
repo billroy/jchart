@@ -11,7 +11,7 @@ def r():
     magnitude = random.randrange(0, 1000)
     magnitude = (magnitude * magnitude) / 1000
     sign = random.choice([1, -1])
-    return (magnitude * sign) / 1000
+    return round((magnitude * sign) / 1000, 3)
 
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']
 

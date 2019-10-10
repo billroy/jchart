@@ -13,9 +13,11 @@ function init(chartData) {
     container = document.getElementById('chart');
     camera = new THREE.PerspectiveCamera( 120, window.innerWidth / window.innerHeight, 2, 3000 );
     //camera = new THREE.OrthographicCamera(-2000, 2000, 2000, -2000, 1, 1000);
+    camera.position.x = 200;
     camera.position.y = 200;
     camera.position.z = 1500;
     scene = new THREE.Scene();
+    scene.background = new THREE.Color('linen');
     //scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
     geometry = new THREE.Geometry();
     dateGeometry = new THREE.Geometry();
@@ -39,7 +41,7 @@ function init(chartData) {
     material = new THREE.PointsMaterial( {
         map: sprite,
         size: 16,
-        sizeAttenuation: true,
+        sizeAttenuation: false,
         alphaTest: 0.5,
         transparent: true,
         color: 'blue'
@@ -67,7 +69,7 @@ function init(chartData) {
     dateMaterial = new THREE.PointsMaterial( {
         map: sprite,    // dateSprite,
         size: 2,
-        sizeAttenuation: true,
+        sizeAttenuation: false,
         alphaTest: 0.5,
         transparent: true,
         color: 'white'
