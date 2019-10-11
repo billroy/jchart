@@ -61,7 +61,7 @@ function init(chartData) {
             borderThickness: 2,
             backgroundColor: {r:32, g:32, b:32, a:0.8}
         });
-        //spritey.scale.set(20,10,1);
+        spritey.scale.set(20,10,1);
         spritey.position.set(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
         scene.add( spritey );
     });
@@ -136,7 +136,7 @@ function init(chartData) {
     window.addEventListener( 'resize', onWindowResize, false );
 
     // add navigation controls
-    if (true) {
+    if (false) {
         // trackball controls
         controls = new THREE.TrackballControls( camera );
     	controls.rotateSpeed = 1.0;
