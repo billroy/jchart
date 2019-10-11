@@ -38,7 +38,7 @@ for i in range(num_companies):
     print('New company:', new_company)
     companies.append(new_company)
 
-num_dates = 1000
+num_dates = 5000
 dates = []
 date = datetime.date(2010,1,1)
 

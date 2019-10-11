@@ -1,7 +1,7 @@
 //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 var container, stats;
 var camera, scene, renderer, controls, particles, geometry, material, i, h, color, sprite, size;
-var dateGeometry, dateMaterial, dateParticles;
+var dateGeometry, dateMaterial, dateLines;
 var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
@@ -75,8 +75,8 @@ function init(chartData) {
         color: 'white'
     } );
     //material.color.setHSL( 1.0, 0.3, 0.7 );
-    dateParticles = new THREE.Points( dateGeometry, dateMaterial );
-    scene.add( dateParticles );
+    //dateParticles = new THREE.Points( dateGeometry, dateMaterial );
+    //scene.add( dateParticles );
 
     // connection lines between sequential dates
     function getVector3(date_index) {
@@ -89,15 +89,17 @@ function init(chartData) {
         color: 0x808080,
         opacity: 0.01
     });
+    dateLines = new THREE.Line( dateGeometry, line_material );
+    scene.add( dateLines );
 
-    if (chartData && chartData.dates) {
-        for (var i=1; i < chartData.dates.length; i++) {    // note we start from 1
-            var line_geometry = new THREE.Geometry();
-            line_geometry.vertices.push(getVector3(i-1), getVector3(i));
-            var line_layer = new THREE.Line(line_geometry, line_material);
-            scene.add(line_layer);
-        }
-    };
+//    if (chartData && chartData.dates) {
+//        for (var i=1; i < chartData.dates.length; i++) {    // note we start from 1
+//            var line_geometry = new THREE.Geometry();
+//            line_geometry.vertices.push(getVector3(i-1), getVector3(i));
+//            var line_layer = new THREE.Line(line_geometry, line_material);
+//            scene.add(line_layer);
+//        }
+//    };
 
     // axes
     function drawAxis(x, y, z, color) {
