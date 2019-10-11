@@ -19,6 +19,7 @@ var app = express();
 var http = require('http');
 server = http.createServer(app);
 var io;                         // socket.io handle
+var cached_chart;
 
 // configure json body parser
 var bodyParser = require('body-parser');
@@ -35,6 +36,7 @@ app.post('/xychart/', function(req, res) {
 
 app.post('/hairball/', function(req, res) {
     emitChart(req.body, 'hairball');     // send to connected clients
+    cached_chart = req.body;
     return res.sendStatus(200);
 });
 
@@ -93,6 +95,7 @@ var listener = server.listen(argv.port, function() {
         });
 
         //socket.emit('ping', {time: new Date().getTime()});
+        if (cached_chart) emitChart(cached_chart, 'hairball');     // send to connected clients
     });
 
 });
