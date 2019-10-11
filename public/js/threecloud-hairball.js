@@ -1,6 +1,6 @@
 //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 var container, stats;
-var camera, scene, renderer, particles, geometry, material, i, h, color, sprite, size;
+var camera, scene, renderer, controls, particles, geometry, material, i, h, color, sprite, size;
 var dateGeometry, dateMaterial, dateParticles;
 var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
@@ -133,18 +133,27 @@ function init(chartData) {
     //
     window.addEventListener( 'resize', onWindowResize, false );
 
-    // trackball controls
-    controls = new THREE.TrackballControls( camera );
-	controls.rotateSpeed = 1.0;
-	controls.zoomSpeed = 1.2;
-	controls.panSpeed = 0.8;
-	controls.noZoom = false;
-	controls.noPan = false;
-	controls.staticMoving = true;
-	controls.dynamicDampingFactor = 0.3;
-	controls.keys = [ 65, 83, 68 ];
-    //controls.minDistance = -Infinity;
-    controls.addEventListener( 'change', render );
+    // add navigation controls
+    if (true) {
+        // trackball controls
+        controls = new THREE.TrackballControls( camera );
+    	controls.rotateSpeed = 1.0;
+    	controls.zoomSpeed = 1.2;
+    	controls.panSpeed = 0.8;
+    	controls.noZoom = false;
+    	controls.noPan = false;
+    	controls.staticMoving = false;
+    	controls.dynamicDampingFactor = 0.3;
+    	controls.keys = [ 65, 83, 68 ];
+        //controls.minDistance = -Infinity;
+        controls.addEventListener( 'change', render );
+    }
+    else {
+        // orbit controls
+        controls = new THREE.OrbitControls( camera );
+        //controls = new THREE.FlyControls( camera );
+        //controls.addEventListener( 'change', render );
+    }
 }
 
 function makeTextSprite( message, parameters ) {

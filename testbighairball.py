@@ -53,7 +53,7 @@ for i in range(num_dates):
     x = x + r()/10
     y = y + r()/10
     z = z + r()/100 + .00001
-    new_date = {'label': str(date), 'coords': [x, y, z]}
+    new_date = {'label': str(date), 'coords': [round(x, 3), round(y, 3), round(z, 3)]}
     date += datetime.timedelta(days=1)
     dates.append(new_date)
 
@@ -67,6 +67,8 @@ chart_spec = {
 payload = json.dumps(chart_spec)
 print('Data length:', len(payload))
 #print 'Posting:', data
+with open('hairball-generated.json', 'w') as f:
+    f.write(payload)
 
 status = requests.post(url,
                         data=payload,
