@@ -38,16 +38,16 @@ function init(chartData) {
         scene.add( spritey );
     });
 
-    material = new THREE.PointsMaterial( {
-        map: sprite,
-        size: 16,
-        sizeAttenuation: false,
-        alphaTest: 0.5,
-        transparent: true,
-        color: 'blue'
-    } );
+    //material = new THREE.PointsMaterial( {
+    //    map: sprite,
+    //    size: 16,
+    //    sizeAttenuation: false,
+    //    alphaTest: 0.5,
+    //    transparent: true,
+    //    color: 'blue'
+    //} );
     //material.color.setHSL( 1.0, 0.3, 0.7 );
-    particles = new THREE.Points( geometry, material );
+    //particles = new THREE.Points( geometry, material );
     //scene.add( particles );
 
     // date labels
@@ -61,28 +61,22 @@ function init(chartData) {
             borderThickness: 2,
             backgroundColor: {r:32, g:32, b:32, a:0.8}
         });
-        spritey.scale.set(20,10,1);
+        //spritey.scale.set(20,10,1);
         spritey.position.set(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
         scene.add( spritey );
     });
 
-    dateMaterial = new THREE.PointsMaterial( {
-        map: sprite,    // dateSprite,
-        size: 2,
-        sizeAttenuation: false,
-        alphaTest: 0.5,
-        transparent: true,
-        color: 'white'
-    } );
+    //dateMaterial = new THREE.PointsMaterial( {
+    //    map: sprite,    // dateSprite,
+    //    size: 2,
+    //    sizeAttenuation: false,
+    //    alphaTest: 0.5,
+    //    transparent: true,
+    //    color: 'white'
+    //} );
     //material.color.setHSL( 1.0, 0.3, 0.7 );
     //dateParticles = new THREE.Points( dateGeometry, dateMaterial );
     //scene.add( dateParticles );
-
-    // connection lines between sequential dates
-    function getVector3(date_index) {
-        var point = chartData.dates[date_index];
-        return new THREE.Vector3(point.coords[0] * scale, point.coords[1] * scale, point.coords[2] * scale);
-    }
 
     //var line_material = new THREE.LineBasicMaterial({color: 0x202020, opacity: 0.01});
     var line_material = new THREE.LineBasicMaterial({
@@ -92,6 +86,12 @@ function init(chartData) {
     dateLines = new THREE.Line( dateGeometry, line_material );
     scene.add( dateLines );
 
+//    // connection lines between sequential dates
+//    function getVector3(date_index) {
+//        var point = chartData.dates[date_index];
+//        return new THREE.Vector3(point.coords[0] * scale, point.coords[1] * scale, point.coords[2] * scale);
+//    }
+//
 //    if (chartData && chartData.dates) {
 //        for (var i=1; i < chartData.dates.length; i++) {    // note we start from 1
 //            var line_geometry = new THREE.Geometry();
@@ -180,6 +180,8 @@ function makeTextSprite( message, parameters ) {
 
 	var canvas = document.createElement('canvas');
 	var context = canvas.getContext('2d');
+    context.canvas.width = 256;
+    context.canvas.height = 128;
 	context.font = "Bold " + fontsize + "px " + fontface;
 
 	// get size data (height depends only on font size)
@@ -222,7 +224,7 @@ function makeTextSprite( message, parameters ) {
     });
 	var sprite = new THREE.Sprite( spriteMaterial );
 	sprite.scale.set(100,50,1.0);
-	return sprite;
+    return sprite;
 }
 
 // function for drawing rounded rectangles
