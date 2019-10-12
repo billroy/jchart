@@ -24,10 +24,10 @@ function init(chartData) {
     sprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/disc.png" );
     dateSprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/spark1.png" );
 
-    // company points and labels
+    // company labels
     if (chartData && chartData.companies) chartData.companies.forEach(function(point) {
-        var vertex = new THREE.Vector3(point.coords[0] * scale, point.coords[1] * scale, point.coords[2] * scale);
-        geometry.vertices.push(vertex);
+        //var vertex = new THREE.Vector3(point.coords[0] * scale, point.coords[1] * scale, point.coords[2] * scale);
+        //geometry.vertices.push(vertex);
 
         var spritey = makeTextSprite(point.ticker, {
             fontsize: 24,
@@ -156,6 +156,17 @@ function init(chartData) {
         //controls = new THREE.FlyControls( camera );
         //controls.addEventListener( 'change', render );
     }
+
+    //var sphere = new THREE.Mesh(
+    //    new THREE.SphereGeometry(1000, 2, 2),
+    //    new THREE.MeshBasicMaterial( {
+    //        color: 0x040404,
+    //        wireframe: true
+    //    } )
+    //);
+    //scene.add(sphere);
+
+
 }
 
 function makeTextSprite( message, parameters ) {
@@ -217,7 +228,7 @@ function makeTextSprite( message, parameters ) {
 	texture.needsUpdate = true;
 
 	var spriteMaterial = new THREE.SpriteMaterial({
-        map: texture,
+        map: texture
         //useScreenCoordinates: false,
         //alignment: spriteAlignment
         // TODO: fog: true
