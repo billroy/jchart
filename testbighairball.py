@@ -11,7 +11,12 @@ def r():
     magnitude = random.randrange(0, 1000)
     magnitude = (magnitude * magnitude) / 1000
     sign = random.choice([1, -1])
-    return round((magnitude * sign) / 1000, 3)
+    return round((magnitude * sign)/1000, 3)
+
+def ru():
+    magnitude = 1.0-math.sqrt(random.random())
+    sign = random.choice([1, -1])
+    return round((magnitude * sign), 3)
 
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']
 
@@ -27,11 +32,11 @@ def rt():
 num_companies = 500
 companies = []
 for i in range(num_companies):
-    new_company = {'ticker': rt(), 'coords': [r(), r(), r()], 'color': rc()}
+    new_company = {'ticker': rt(), 'coords': [ru(), ru(), ru()], 'color': rc()}
     print('New company:', new_company)
     companies.append(new_company)
 
-num_dates = 1000
+num_dates = 3000
 dates = []
 date = datetime.date(2010,1,1)
 
