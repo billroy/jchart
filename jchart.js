@@ -36,7 +36,8 @@ app.post('/xychart/', function(req, res) {
 
 app.post('/hairball/', function(req, res) {
     emitChart(req.body, 'hairball');     // send to connected clients
-    cached_chart = req.body;
+    // enable next line to enable storage of one-deep chart cache
+    //cached_chart = req.body;
     return res.sendStatus(200);
 });
 
