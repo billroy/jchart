@@ -132,6 +132,11 @@ $(document).ready(function() {
         updateChart(chart);
     });
 
+    $.get('/hairball-generated.json', '', function(data, textStatus, jqXHR) {
+        console.log('got startup data: ', data)
+        updateChart(data);
+    }, 'json');
+
     initChart();
 
     adjustWorkspaceSize();
