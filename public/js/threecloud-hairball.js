@@ -17,12 +17,12 @@ function init(chartData) {
     camera.position.y = 200;
     camera.position.z = 1500;
     scene = new THREE.Scene();
-    scene.background = new THREE.Color('linen');
+    //scene.background = new THREE.Color('linen');
     //scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
     geometry = new THREE.Geometry();
     dateGeometry = new THREE.BufferGeometry();
-    sprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/disc.png" );
-    dateSprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/spark1.png" );
+    //sprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/disc.png" );
+    //dateSprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/spark1.png" );
 
     // company labels
     if (chartData && chartData.companies) chartData.companies.forEach(function(point) {
@@ -141,9 +141,9 @@ function init(chartData) {
     stats = new Stats();
     container.appendChild( stats.dom );
     //
-    //document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-    //document.addEventListener( 'touchstart', onDocumentTouchStart, false );
-    //document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+    document.addEventListener( 'touchmove', onDocumentTouchMove, false );
     //
     window.addEventListener( 'resize', onWindowResize, false );
 

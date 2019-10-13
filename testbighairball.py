@@ -36,7 +36,7 @@ for i in range(num_companies):
     print('New company:', new_company)
     companies.append(new_company)
 
-num_dates = 3000
+num_dates = 5000
 dates = []
 date = datetime.date(2010,1,1)
 
@@ -47,7 +47,7 @@ z = 0.
 for i in range(num_dates):
     x = x + r()/10
     y = y + r()/10
-    z = z + r()/100 + .00001
+    z = z + r()/100 + .000005
     new_date = {'label': str(date), 'coords': [round(x, 3), round(y, 3), round(z, 3)]}
     dates.append(new_date)
     date += datetime.timedelta(days=1)
