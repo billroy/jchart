@@ -20,7 +20,7 @@ function init(chartData) {
     scene.background = new THREE.Color('linen');
     //scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
     geometry = new THREE.Geometry();
-    dateGeometry = new THREE.Geometry();
+    dateGeometry = new THREE.BufferGeometry();
     sprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/disc.png" );
     dateSprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/spark1.png" );
 
@@ -51,9 +51,17 @@ function init(chartData) {
     //scene.add( particles );
 
     // date labels
-    if (chartData && chartData.dates) chartData.dates.forEach(function(date) {
-        var vertex = new THREE.Vector3(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
-        dateGeometry.vertices.push(vertex);
+    var datePositions = [];
+    var dateColors = [];
+    var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'aqua', 'chartreuse', 'coral', 'cyan', 'firebrick'];
+    if (chartData && chartData.dates) chartData.dates.forEach(function(date, index) {
+        datePositions.push(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
+        var month = parseInt(date.label.substr(5,2));
+        var c = new THREE.Color(date.color || colors[month]);
+        dateColors.push(c.r, c.g, c.b);
+        //dateColors.push(new THREE.Color('blue'));
+        //var vertex = new THREE.Vector3(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
+        //dateGeometry.vertices.push(vertex);
 
         var spritey = makeTextSprite(' ' + date.label + ' ', {
             fontsize: 36,
@@ -80,9 +88,13 @@ function init(chartData) {
 
     //var line_material = new THREE.LineBasicMaterial({color: 0x202020, opacity: 0.01});
     var line_material = new THREE.LineBasicMaterial({
-        color: 0x808080,
-        opacity: 0.01
+        //color: 0x808080,
+        //opacity: 0.01
+        vertexColors: THREE.VertexColors
     });
+    dateGeometry.addAttribute('position', new THREE.Float32BufferAttribute(datePositions, 3));
+    dateGeometry.addAttribute('color', new THREE.Float32BufferAttribute(dateColors, 3));
+    dateGeometry.computeBoundingSphere();
     dateLines = new THREE.Line( dateGeometry, line_material );
     scene.add( dateLines );
 
@@ -254,10 +266,6 @@ function roundRect(ctx, x, y, w, h, r) {
     ctx.fill();
 	ctx.stroke();
 }
-
-
-
-
 
 function onWindowResize() {
     windowHalfX = window.innerWidth / 2;
