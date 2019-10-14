@@ -6,6 +6,7 @@ var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 var scale = 1000.0;
+var scaleGain = 250.0;
 
 function init(chartData) {
     //container = document.createElement( 'div' );
@@ -25,16 +26,39 @@ function init(chartData) {
     //dateSprite = new THREE.TextureLoader().load( "/js/three.js/examples/textures/sprites/spark1.png" );
 
     // company labels
-    if (chartData && chartData.companies) chartData.companies.forEach(function(point) {
+    if (chartData && chartData.companies) chartData.companies.forEach(function(company) {
         //var vertex = new THREE.Vector3(point.coords[0] * scale, point.coords[1] * scale, point.coords[2] * scale);
         //geometry.vertices.push(vertex);
 
-        var spritey = makeTextSprite(point.ticker, {
+        // gain bars
+        var gain = company.gain || company.coords[2];
+        gain *= scaleGain;
+        var cylinderGeometry, cylinderMaterial;
+        if (gain > 0) {
+            cylinderGeometry = new THREE.CylinderBufferGeometry(4, 8, gain, 32);
+            cylinderMaterial = new THREE.MeshBasicMaterial({color:'green'});
+            cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+            cylinder.position.set(company.coords[0] * scale, company.coords[1] * scale, gain/2);
+            cylinder.rotation.x = Math.PI/2;
+            scene.add(cylinder);
+        }
+        else if (gain < 0) {
+            cylinderGeometry = new THREE.CylinderBufferGeometry(8, 4, -gain, 32);
+            cylinderMaterial = new THREE.MeshBasicMaterial({color:'red'});
+            cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+            cylinder.rotation.x = Math.PI/2;
+            cylinder.position.set(company.coords[0] * scale, company.coords[1] * scale, gain/2);
+            scene.add(cylinder);
+        }
+
+
+
+        var spritey = makeTextSprite(company.ticker, {
             fontsize: 24,
-            borderColor: point.color || 'white',           // {r:255, g:0, b:0, a:1.0},
+            borderColor: company.color || 'white',           // {r:255, g:0, b:0, a:1.0},
             backgroundColor: {r:32, g:32, b:32, a:0.8}
         });
-        spritey.position.set(point.coords[0] * scale, point.coords[1] * scale, point.coords[2] * scale);
+        spritey.position.set(company.coords[0] * scale, company.coords[1] * scale, 0);
         scene.add( spritey );
     });
 
@@ -55,7 +79,7 @@ function init(chartData) {
     var dateColors = [];
     var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'aqua', 'chartreuse', 'coral', 'cyan', 'firebrick'];
     if (chartData && chartData.dates) chartData.dates.forEach(function(date, index) {
-        datePositions.push(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
+        datePositions.push(date.coords[0] * scale, date.coords[1] * scale, index/10);
         var month = parseInt(date.label.substr(5,2));
         var c = new THREE.Color(date.color || colors[month]);
         dateColors.push(c.r, c.g, c.b);
@@ -70,7 +94,7 @@ function init(chartData) {
             backgroundColor: {r:32, g:32, b:32, a:0.8}
         });
         spritey.scale.set(20,10,1);
-        spritey.position.set(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
+        spritey.position.set(date.coords[0] * scale, date.coords[1] * scale, index/10);
         scene.add( spritey );
     });
 
