@@ -79,11 +79,11 @@ function init(chartData) {
     var dateColors = [];
     var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'aqua', 'chartreuse', 'coral', 'cyan', 'firebrick'];
     if (chartData && chartData.dates) chartData.dates.forEach(function(date, index) {
-        datePositions.push(date.coords[0] * scale, date.coords[1] * scale, index/10);
+        datePositions.push(date.coords[0] * scale, date.coords[1] * scale, index/5);
         var month;
         if (date.label[4] == '-') month = parseInt(date.label.substr(5,2));
         else month = parseInt(date.label.substr(4,2));
-        var c = new THREE.Color(date.color || colors[month]);
+        var c = new THREE.Color(date.color || colors[month-1]);
         dateColors.push(c.r, c.g, c.b);
         //dateColors.push(new THREE.Color('blue'));
         //var vertex = new THREE.Vector3(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
@@ -96,7 +96,7 @@ function init(chartData) {
             backgroundColor: {r:32, g:32, b:32, a:0.8}
         });
         spritey.scale.set(20,10,1);
-        spritey.position.set(date.coords[0] * scale, date.coords[1] * scale, index/10);
+        spritey.position.set(date.coords[0] * scale, date.coords[1] * scale, index/5);
         scene.add( spritey );
     });
 
