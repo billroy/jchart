@@ -8,6 +8,21 @@ var windowHalfY = window.innerHeight / 2;
 var scale = 1000.0;
 var scaleGain = 10000.0;
 
+// gui
+var params = {
+    'showDates': true
+};
+$(document).ready(function() {
+    var gui = new dat.GUI();
+    var dateControl = gui.add(params, 'showDates');
+    dateControl.onChange(function(value) {
+        console.log('date control change:', params, value);
+        showChart(selected_chart);
+    });
+});
+
+
+
 function init(chartData) {
     //container = document.createElement( 'div' );
     //document.body.appendChild( container );
@@ -35,7 +50,7 @@ function init(chartData) {
         gain *= scaleGain;
         var cylinderGeometry, cylinderMaterial;
         if (gain > 0) {
-            cylinderGeometry = new THREE.CylinderBufferGeometry(2, 4, gain, 32);
+            cylinderGeometry = new THREE.CylinderBufferGeometry(1, 1, gain, 32);
             cylinderMaterial = new THREE.MeshBasicMaterial({color:'green'});
             cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
             cylinder.position.set(company.coords[0] * scale, company.coords[1] * scale, gain/2);
@@ -43,7 +58,7 @@ function init(chartData) {
             scene.add(cylinder);
         }
         else if (gain < 0) {
-            cylinderGeometry = new THREE.CylinderBufferGeometry(4, 2, -gain, 32);
+            cylinderGeometry = new THREE.CylinderBufferGeometry(1, 1, -gain, 32);
             cylinderMaterial = new THREE.MeshBasicMaterial({color:'red'});
             cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
             cylinder.rotation.x = Math.PI/2;
@@ -73,56 +88,57 @@ function init(chartData) {
     //material.color.setHSL( 1.0, 0.3, 0.7 );
     //particles = new THREE.Points( geometry, material );
     //scene.add( particles );
+    if (params.showDates) {
+        // date labels
+        var datePositions = [];
+        var dateColors = [];
+        var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'aqua', 'chartreuse', 'coral', 'cyan', 'firebrick'];
+        if (chartData && chartData.dates) chartData.dates.forEach(function(date, index) {
+            datePositions.push(date.coords[0] * scale, date.coords[1] * scale, index/5);
+            var month;
+            if (date.label[4] == '-') month = parseInt(date.label.substr(5,2));
+            else month = parseInt(date.label.substr(4,2));
+            var c = new THREE.Color(date.color || colors[month-1]);
+            dateColors.push(c.r, c.g, c.b);
+            //dateColors.push(new THREE.Color('blue'));
+            //var vertex = new THREE.Vector3(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
+            //dateGeometry.vertices.push(vertex);
 
-    // date labels
-    var datePositions = [];
-    var dateColors = [];
-    var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'aqua', 'chartreuse', 'coral', 'cyan', 'firebrick'];
-    if (chartData && chartData.dates) chartData.dates.forEach(function(date, index) {
-        datePositions.push(date.coords[0] * scale, date.coords[1] * scale, index/5);
-        var month;
-        if (date.label[4] == '-') month = parseInt(date.label.substr(5,2));
-        else month = parseInt(date.label.substr(4,2));
-        var c = new THREE.Color(date.color || colors[month-1]);
-        dateColors.push(c.r, c.g, c.b);
-        //dateColors.push(new THREE.Color('blue'));
-        //var vertex = new THREE.Vector3(date.coords[0] * scale, date.coords[1] * scale, date.coords[2] * scale);
-        //dateGeometry.vertices.push(vertex);
-
-        var spritey = makeTextSprite(' ' + date.label + ' ', {
-            fontsize: 36,
-            borderColor: date.color || 'white',           // {r:255, g:0, b:0, a:1.0},
-            borderThickness: 2,
-            backgroundColor: {r:32, g:32, b:32, a:0.8}
+            var spritey = makeTextSprite(' ' + date.label + ' ', {
+                fontsize: 36,
+                borderColor: date.color || 'white',           // {r:255, g:0, b:0, a:1.0},
+                borderThickness: 2,
+                backgroundColor: {r:32, g:32, b:32, a:0.8}
+            });
+            spritey.scale.set(20,10,1);
+            spritey.position.set(date.coords[0] * scale, date.coords[1] * scale, index/5);
+            scene.add( spritey );
         });
-        spritey.scale.set(20,10,1);
-        spritey.position.set(date.coords[0] * scale, date.coords[1] * scale, index/5);
-        scene.add( spritey );
-    });
 
-    //dateMaterial = new THREE.PointsMaterial( {
-    //    map: sprite,    // dateSprite,
-    //    size: 2,
-    //    sizeAttenuation: false,
-    //    alphaTest: 0.5,
-    //    transparent: true,
-    //    color: 'white'
-    //} );
-    //material.color.setHSL( 1.0, 0.3, 0.7 );
-    //dateParticles = new THREE.Points( dateGeometry, dateMaterial );
-    //scene.add( dateParticles );
+        //dateMaterial = new THREE.PointsMaterial( {
+        //    map: sprite,    // dateSprite,
+        //    size: 2,
+        //    sizeAttenuation: false,
+        //    alphaTest: 0.5,
+        //    transparent: true,
+        //    color: 'white'
+        //} );
+        //material.color.setHSL( 1.0, 0.3, 0.7 );
+        //dateParticles = new THREE.Points( dateGeometry, dateMaterial );
+        //scene.add( dateParticles );
 
-    //var line_material = new THREE.LineBasicMaterial({color: 0x202020, opacity: 0.01});
-    var line_material = new THREE.LineBasicMaterial({
-        //color: 0x808080,
-        //opacity: 0.01
-        vertexColors: THREE.VertexColors
-    });
-    dateGeometry.addAttribute('position', new THREE.Float32BufferAttribute(datePositions, 3));
-    dateGeometry.addAttribute('color', new THREE.Float32BufferAttribute(dateColors, 3));
-    dateGeometry.computeBoundingSphere();
-    dateLines = new THREE.Line( dateGeometry, line_material );
-    scene.add( dateLines );
+        //var line_material = new THREE.LineBasicMaterial({color: 0x202020, opacity: 0.01});
+        var line_material = new THREE.LineBasicMaterial({
+            //color: 0x808080,
+            //opacity: 0.01
+            vertexColors: THREE.VertexColors
+        });
+        dateGeometry.addAttribute('position', new THREE.Float32BufferAttribute(datePositions, 3));
+        dateGeometry.addAttribute('color', new THREE.Float32BufferAttribute(dateColors, 3));
+        dateGeometry.computeBoundingSphere();
+        dateLines = new THREE.Line( dateGeometry, line_material );
+        scene.add( dateLines );
+    }
 
 //    // connection lines between sequential dates
 //    function getVector3(date_index) {
