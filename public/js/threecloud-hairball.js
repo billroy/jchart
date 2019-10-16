@@ -6,7 +6,7 @@ var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 var scale = 1000.0;
-var scaleGain = 250.0;
+var scaleGain = 10000.0;
 
 function init(chartData) {
     //container = document.createElement( 'div' );
@@ -31,11 +31,11 @@ function init(chartData) {
         //geometry.vertices.push(vertex);
 
         // gain bars
-        var gain = company.gain || company.coords[2];
+        var gain = company.ratio || company.coords[2];
         gain *= scaleGain;
         var cylinderGeometry, cylinderMaterial;
         if (gain > 0) {
-            cylinderGeometry = new THREE.CylinderBufferGeometry(4, 8, gain, 32);
+            cylinderGeometry = new THREE.CylinderBufferGeometry(2, 4, gain, 32);
             cylinderMaterial = new THREE.MeshBasicMaterial({color:'green'});
             cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
             cylinder.position.set(company.coords[0] * scale, company.coords[1] * scale, gain/2);
@@ -43,7 +43,7 @@ function init(chartData) {
             scene.add(cylinder);
         }
         else if (gain < 0) {
-            cylinderGeometry = new THREE.CylinderBufferGeometry(8, 4, -gain, 32);
+            cylinderGeometry = new THREE.CylinderBufferGeometry(4, 2, -gain, 32);
             cylinderMaterial = new THREE.MeshBasicMaterial({color:'red'});
             cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
             cylinder.rotation.x = Math.PI/2;
@@ -58,7 +58,7 @@ function init(chartData) {
             borderColor: company.color || 'white',           // {r:255, g:0, b:0, a:1.0},
             backgroundColor: {r:32, g:32, b:32, a:0.8}
         });
-        spritey.position.set(company.coords[0] * scale, company.coords[1] * scale, 0);
+        spritey.position.set(company.coords[0] * scale, company.coords[1] * scale, gain);
         scene.add( spritey );
     });
 
@@ -80,7 +80,9 @@ function init(chartData) {
     var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'aqua', 'chartreuse', 'coral', 'cyan', 'firebrick'];
     if (chartData && chartData.dates) chartData.dates.forEach(function(date, index) {
         datePositions.push(date.coords[0] * scale, date.coords[1] * scale, index/10);
-        var month = parseInt(date.label.substr(5,2));
+        var month;
+        if (date.label[4] == '-') month = parseInt(date.label.substr(5,2));
+        else month = parseInt(date.label.substr(4,2));
         var c = new THREE.Color(date.color || colors[month]);
         dateColors.push(c.r, c.g, c.b);
         //dateColors.push(new THREE.Color('blue'));

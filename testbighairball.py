@@ -14,7 +14,7 @@ def r():
     return round((magnitude * sign)/1000, 3)
 
 def ru():
-    magnitude = 1.0-math.sqrt(random.random())
+    magnitude = ((1000 * random.random()) ** (1/2)) / 30
     sign = random.choice([1, -1])
     return round((magnitude * sign), 3)
 
@@ -32,11 +32,11 @@ def rt():
 num_companies = 500
 companies = []
 for i in range(num_companies):
-    new_company = {'ticker': rt(), 'coords': [ru(), ru(), ru()], 'color': rc()}
+    new_company = {'ticker': rt(), 'coords': [r(), r(), r()], 'color': rc()}
     print('New company:', new_company)
     companies.append(new_company)
 
-num_dates = 5000
+num_dates = 365
 dates = []
 date = datetime.date(2010,1,1)
 
